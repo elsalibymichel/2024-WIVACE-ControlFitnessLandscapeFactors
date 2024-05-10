@@ -51,9 +51,9 @@ import java.util.stream.IntStream;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
 
-public class LandscapeCharacterizer {
+public class TwoDNavLandscapeCharacterizer {
 
-  private static final Logger L = Logger.getLogger(LandscapeCharacterizer.class.getName());
+  private static final Logger L = Logger.getLogger(TwoDNavLandscapeCharacterizer.class.getName());
 
   record Pair(String environment, String builder) {}
 
@@ -241,7 +241,7 @@ public class LandscapeCharacterizer {
     // Parse command line options
     Configuration configuration = new Configuration();
     JCommander jc = JCommander.newBuilder().addObject(configuration).build();
-    jc.setProgramName(LandscapeCharacterizer.class.getName());
+    jc.setProgramName(TwoDNavLandscapeCharacterizer.class.getName());
     try {
       jc.parse(args);
     } catch (ParameterException e) {

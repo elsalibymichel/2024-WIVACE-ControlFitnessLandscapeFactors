@@ -1,7 +1,3 @@
-import io.github.ericmedvet.jsdynsym.buildable.builders.NumericalDynamicalSystems;
-import io.github.ericmedvet.jsdynsym.control.navigation.NavigationEnvironment;
-import io.github.ericmedvet.jsdynsym.core.numerical.ann.MultiLayerPerceptron;
-
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 import java.util.Arrays;
@@ -40,8 +36,8 @@ public class RastriginLandscapeCharacterizer {
   private static final List<String> FITNESS_FUNCTIONS = List.of("rastrigin");
 
 
-  private static double[] getFitnessValues(double stretchFactor, int genotypeSize, double[] genotype) {
-    return new double[]{new Rastrigin(genotypeSize, stretchFactor).evaluate(genotype)};
+  private static double[] getFitnessValues(double stretchFactor, double[] genotype) {
+    return new double[]{new Rastrigin(genotype, stretchFactor).evaluate()};
   }
 
   private static int computeNeighborNumber(int genotypeSize) {
@@ -68,10 +64,7 @@ public class RastriginLandscapeCharacterizer {
 
     // Setup the progress printer
     AtomicInteger counterCombination = new AtomicInteger();
-    long initialTime = System.currentTimeMillis();
-    Runnable progressPrinterRunnable = () -> {
-      System.out.printf("Simulations: %d/%d%n", counterCombination.get(), totalCombinations);
-    };
+    Runnable progressPrinterRunnable = () -> System.out.printf("Simulations: %d/%d%n", counterCombination.get(), totalCombinations);
     ScheduledExecutorService updatePrinterExecutor = Executors.newScheduledThreadPool(1);
     updatePrinterExecutor.scheduleAtFixedRate(
         progressPrinterRunnable, 0, DELTA_UPDATE, TimeUnit.SECONDS);
@@ -103,7 +96,7 @@ public class RastriginLandscapeCharacterizer {
           // Compute and store the current centralGenotype fitness for all neighbors once and for all
           int finalCenter = center;
           executorService.submit(() -> {
-            double[] centralGenotypeFitnessValues = getFitnessValues(stretchFactor, genotypeLength, centralGenotype);
+            double[] centralGenotypeFitnessValues = getFitnessValues(stretchFactor, centralGenotype);
             for (int n = 0; n < neighborsNumber; ++n) {
               String line = "%.2e,%d,%d,%d,%.2e,%d,"
                   .formatted(
@@ -162,7 +155,7 @@ public class RastriginLandscapeCharacterizer {
                     .boxed()
                     .mapToDouble(s -> s * finalSample)
                     .toArray();
-                double[] fitnessValues = getFitnessValues(stretchFactor, genotypeLength, sampleGenotype);
+                double[] fitnessValues = getFitnessValues(stretchFactor, sampleGenotype);
                 line.append(Arrays.stream(fitnessValues)
                     .mapToObj(value -> String.format("%.5e", value))
                     .collect(Collectors.joining(",")));
