@@ -24,20 +24,18 @@ import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 
 public class BestGenotypesLandscapeCharacterizer {
-
+  
   record Pair(String environment, String builder) {
   }
 
   private static final int NEIGHBORS_NUMBER = 100;
   private static final int SAMPLES_NUMBER = 100;
-  private static final long SEED = 1;
-  private static final String RESULTS_TARGET = "neurons_dynamic_optimalPoint_characterized.csv";
+  private static final long SEED = 187492930;
+  private static final String EXPERIMENT_NAME = "_dynamic_optimalPoint_characterized.csv";
 
   private static final boolean ADAPTIVE_SAMPLING_RATE = true;
   private static final double RESOLUTION_WEIGHT = 0.007;  // 0.007 is 0.01/sqrt(2)
   private static final double FIXED_SAMPLING_RATE = 0.01; // Only used if ADAPTIVE_SAMPLING_RATE is false
-
-  private static final String FILE_PATH = "/home/melsalib/Desktop/IntellijProjects/paper-ruggedness/io.github.elsalibymichel.core/src/data/sensors_onlyLast.csv";
 
   private static final NamedBuilder<Object> BUILDER = NamedBuilder.fromDiscovery();
 
@@ -88,21 +86,40 @@ public class BestGenotypesLandscapeCharacterizer {
   public static void main(String[] args) throws IOException {
 
     Locale.setDefault(Locale.ROOT);
-    String filePath;
+
+    String filePath = "";
     try {
       filePath = args[0];
     } catch (Exception e) {
-      System.out.println("No file path provided, default path will be used.\n");
-      filePath = FILE_PATH;
-    }
-
-    try {
-      Files.deleteIfExists(Paths.get(RESULTS_TARGET));
-    } catch (IOException e) {
-      e.printStackTrace();
+      System.out.println("No file path specified.\n");
       System.exit(-2);
     }
-    try (PrintStream ps = new PrintStream(RESULTS_TARGET)) {
+
+    String factor = "";
+    try {
+      factor = args[1];
+      switch (factor) {
+        case "barriers", "mazes", "sensorRanges", "nOfSensors", "singleLayerNeurons", "neuronLayers" -> {
+        }
+        default -> {
+          System.out.println("Invalid factor. Choose between:\n   barriers\n   mazes\n   sensorRanges\n   numberOfSensors\n   singleLayerNeurons\n   neuronLayers\n");
+          System.exit(-6);
+        }
+      }
+    } catch (Exception e) {
+      System.out.println("No factor specified.\n");
+      System.exit(-3);
+    }
+
+    String results_target = factor + EXPERIMENT_NAME;
+
+    try {
+      Files.deleteIfExists(Paths.get(results_target));
+    } catch (IOException e) {
+      e.printStackTrace();
+      System.exit(-4);
+    }
+    try (PrintStream ps = new PrintStream(results_target)) {
       String header = "ENVIRONMENT,BUILDER,CENTER_INDEX,NEIGHBOR_INDEX,SAMPLE_INDEX,SEGMENT_LENGTH,GENOTYPE_SIZE,FITNESS_FUNCTION,FITNESS_VALUE";
       ps.println(header);
       // double segmentLength = SAMPLES_NUMBER * FIXED_SAMPLING_RATE;
@@ -128,13 +145,31 @@ public class BestGenotypesLandscapeCharacterizer {
           double[] centralGenotype = Arrays.stream(csvRecord.get(16).replaceAll("[\\[\\]]", "").split(","))
               .mapToDouble(Double::valueOf)
               .toArray();
-          // int nSensors = Integer.parseInt(csvRecord.get(1)); // number of sensors
-          // Pair problem = new Pair(String.format("ds.e.navigation(arena = A_BARRIER; nOfSensors = %d)", nSensors), "ds.num.mlp(innerLayerRatio = 3)");
-          // int nNeurons = Integer.parseInt(csvRecord.get(1)); // number of sensors
-          // Pair problem = new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 7)", String.format("ds.num.mlp(innerLayerRatio = %d)", nNeurons));
-          int nNeuronLayers = Integer.parseInt(csvRecord.get(1)); // number of sensors
-          Pair problem = new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 7)", String.format("ds.num.mlp(nOfInnerLayers = %d)", nNeuronLayers));
 
+          Pair problem = null;
+
+          switch (factor) {
+            case "barriers", "mazes" -> {
+              String arena = csvRecord.get(1); // number of sensors
+              problem = new Pair(String.format("ds.e.navigation(arena = %s; nOfSensors = 5; sensorRange = 1)", arena), "ds.num.mlp(innerLayerRatio = 3; nOfInnerLayers = 1)");
+            }
+            case "sensorRanges" -> {
+              float sensorRange = Integer.parseInt(csvRecord.get(1)); // number of sensors
+              problem = new Pair(String.format("ds.e.navigation(arena = A_BARRIER; nOfSensors = 5; sensorRange = %f)", sensorRange), "ds.num.mlp(innerLayerRatio = 3; nOfInnerLayers = 1)");
+            }
+            case "nOfSensors" -> {
+              int nSensors = Integer.parseInt(csvRecord.get(1)); // number of sensors
+              problem = new Pair(String.format("ds.e.navigation(arena = A_BARRIER; nOfSensors = %d; sensorRange = 1)", nSensors), "ds.num.mlp(innerLayerRatio = 3; nOfInnerLayers = 1)");
+            }
+            case "singleLayerNeurons" -> {
+              int nNeuronsMultiplier = Integer.parseInt(csvRecord.get(1)); // number of sensors
+              problem = new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 5; sensorRange = 1)", String.format("ds.num.mlp(innerLayerRatio = %d; nOfInnerLayers = 1)", nNeuronsMultiplier));
+            }
+            case "neuronLayers" -> {
+              int nNeuronLayers = Integer.parseInt(csvRecord.get(1)); // number of sensors
+              problem = new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 5; sensorRange = 1)", String.format("ds.num.mlp(innerLayerRatio = 1; nOfInnerLayers = %d)", nNeuronLayers));
+            }
+          }
 
           // Extract the environment and the builder and check if they are correctly parsed
           NavigationEnvironment environment = (NavigationEnvironment) BUILDER.build(problem.environment);
@@ -144,7 +179,7 @@ public class BestGenotypesLandscapeCharacterizer {
           int genotypeSize = mlp.getParams().length;
           if (genotypeSize != centralGenotype.length) {
             System.out.println("Genotype size mismatch");
-            System.exit(1);
+            System.exit(-5);
           }
 
           double segmentLength = computeSegmentLength(genotypeSize);
@@ -152,13 +187,14 @@ public class BestGenotypesLandscapeCharacterizer {
           // Compute and store the current centralGenotype fitness for all neighbors once and for all
           // Increment the total counter for the central genotype
           TOTAL_JOBS.getAndIncrement();
+          Pair finalProblem = problem;
           executorService.submit(() -> {
-            double centralGenotypeFitnessValues = getFitnessValues(problem, centralGenotype, fitnessFunction);
+            double centralGenotypeFitnessValues = getFitnessValues(finalProblem, centralGenotype, fitnessFunction);
             for (int n = 0; n < NEIGHBORS_NUMBER; ++n) {
               String line = "%s,%s,%d,%d,%d,%.2e,%d,%s,%.5e"
                   .formatted(
-                      problem.environment,
-                      problem.builder,
+                      finalProblem.environment,
+                      finalProblem.builder,
                       center,
                       n,
                       0,
@@ -203,11 +239,11 @@ public class BestGenotypesLandscapeCharacterizer {
                     .boxed()
                     .mapToDouble(s -> s * finalSample)
                     .toArray();
-                double fitnessValue = getFitnessValues(problem, sampleGenotype, fitnessFunction);
+                double fitnessValue = getFitnessValues(finalProblem, sampleGenotype, fitnessFunction);
                 String line = "%s,%s,%d,%d,%d,%.2e,%d,%s,%.5e"
                     .formatted(
-                        problem.environment,
-                        problem.builder,
+                        finalProblem.environment,
+                        finalProblem.builder,
                         center,
                         finalNeighbor,
                         finalSample,

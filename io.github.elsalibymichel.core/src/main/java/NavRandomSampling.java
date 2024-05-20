@@ -57,59 +57,48 @@ public class NavRandomSampling {
 
   private static final List<String> FITNESS_FUNCTIONS = List.of("ds.e.n.avgD()", "ds.e.n.minD()", "ds.e.n.finalD()");
   private static final List<Pair> PROBLEMS = List.of(
-      // Plot: x_axis=innerLayerRatio(1, 2, 3, 4, 5) with fixed nOfSensors=7 and Barrier=C_BARRIER
-      new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 7)", "ds.num.mlp(nOfInnerLayers = 1)"),
-      new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 7)", "ds.num.mlp(nOfInnerLayers = 5)"),
-      new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 7)", "ds.num.mlp(c = 10)"),
-      new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 7)", "ds.num.mlp(nOfInnerLayers = 15)"),
-      new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 7)", "ds.num.mlp(nOfInnerLayers = 20)")
-      /*
-      // BARRIER
-      // Plot: x_axis=innerLayerRatio(1, 2, 3, 4, 5) with fixed nOfSensors=7 and Barrier=C_BARRIER
-      new Pair("ds.e.navigation(arena = C_BARRIER; nOfSensors = 7)", "ds.num.mlp(innerLayerRatio = 1)"),
-      new Pair("ds.e.navigation(arena = C_BARRIER; nOfSensors = 7)", "ds.num.mlp(innerLayerRatio = 2)"),
-      new Pair("ds.e.navigation(arena = C_BARRIER; nOfSensors = 7)", "ds.num.mlp(innerLayerRatio = 3)"),
-      new Pair("ds.e.navigation(arena = C_BARRIER; nOfSensors = 7)", "ds.num.mlp(innerLayerRatio = 4)"),
-      new Pair("ds.e.navigation(arena = C_BARRIER; nOfSensors = 7)", "ds.num.mlp(innerLayerRatio = 5)"),
 
-      // Plot: x_axis=nOfSensors(3, 5, 7, 9, 11) with fixed innerLayerRatio=3 and Barrier=C_BARRIER
-      new Pair("ds.e.navigation(arena = C_BARRIER; nOfSensors = 3)", "ds.num.mlp(innerLayerRatio = 3)"),
-      new Pair("ds.e.navigation(arena = C_BARRIER; nOfSensors = 5)", "ds.num.mlp(innerLayerRatio = 3)"),
-      // new Pair("ds.e.navigation(arena = C_BARRIER; nOfSensors = 7)", "ds.num.mlp(innerLayerRatio = 3)"),
-      new Pair("ds.e.navigation(arena = C_BARRIER; nOfSensors = 9)", "ds.num.mlp(innerLayerRatio = 3)"),
-      new Pair("ds.e.navigation(arena = C_BARRIER; nOfSensors = 11)", "ds.num.mlp(innerLayerRatio = 3)"),
+      // Plot: x_axis=barrier(A_BARRIER, B_BARRIER, C_BARRIER, D_BARRIER, E_BARRIER) with the other parameters fixed
+      new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 5; sensorRange = 1)", "ds.num.mlp(innerLayerRatio = 3; nOfInnerLayers = 1)"),
+      new Pair("ds.e.navigation(arena = B_BARRIER; nOfSensors = 5; sensorRange = 1)", "ds.num.mlp(innerLayerRatio = 3; nOfInnerLayers = 1)"),
+      new Pair("ds.e.navigation(arena = C_BARRIER; nOfSensors = 5; sensorRange = 1)", "ds.num.mlp(innerLayerRatio = 3; nOfInnerLayers = 1)"),
+      new Pair("ds.e.navigation(arena = D_BARRIER; nOfSensors = 5; sensorRange = 1)", "ds.num.mlp(innerLayerRatio = 3; nOfInnerLayers = 1)"),
+      new Pair("ds.e.navigation(arena = E_BARRIER; nOfSensors = 5; sensorRange = 1)", "ds.num.mlp(innerLayerRatio = 3; nOfInnerLayers = 1)"),
 
-      // Plot: x_axis=barrier(A_BARRIER, B_BARRIER, C_BARRIER, D_BARRIER, E_BARRIER) with fixed innerLayerRatio=3
-      // and nOfSensors=7
-      new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 7)", "ds.num.mlp(innerLayerRatio = 3)"),
-      new Pair("ds.e.navigation(arena = B_BARRIER; nOfSensors = 7)", "ds.num.mlp(innerLayerRatio = 3)"),
-      // new Pair("ds.e.navigation(arena = C_BARRIER; nOfSensors = 7)", "ds.num.mlp(innerLayerRatio = 3)"),
-      new Pair("ds.e.navigation(arena = D_BARRIER; nOfSensors = 7)", "ds.num.mlp(innerLayerRatio = 3)"),
-      new Pair("ds.e.navigation(arena = E_BARRIER; nOfSensors = 7)", "ds.num.mlp(innerLayerRatio = 3)"),
+      // Plot: x_axis=barrier(A_MAZE, B_MAZE, C_MAZE, D_MAZE, E_MAZE) with the other parameters fixed
+      new Pair("ds.e.navigation(arena = A_MAZE; nOfSensors = 5; sensorRange = 1)", "ds.num.mlp(innerLayerRatio = 3; nOfInnerLayers = 1)"),
+      new Pair("ds.e.navigation(arena = B_MAZE; nOfSensors = 5; sensorRange = 1)", "ds.num.mlp(innerLayerRatio = 3; nOfInnerLayers = 1)"),
+      new Pair("ds.e.navigation(arena = C_MAZE; nOfSensors = 5; sensorRange = 1)", "ds.num.mlp(innerLayerRatio = 3; nOfInnerLayers = 1)"),
+      new Pair("ds.e.navigation(arena = D_MAZE; nOfSensors = 5; sensorRange = 1)", "ds.num.mlp(innerLayerRatio = 3; nOfInnerLayers = 1)"),
+      new Pair("ds.e.navigation(arena = E_MAZE; nOfSensors = 5; sensorRange = 1)", "ds.num.mlp(innerLayerRatio = 3; nOfInnerLayers = 1)"),
 
-      // MAZE
-      // Plot: x_axis=innerLayerRatio(1, 2, 3, 4, 5) with fixed nOfSensors=7 and Barrier=C_MAZE
-      new Pair("ds.e.navigation(arena = C_MAZE; nOfSensors = 7)", "ds.num.mlp(innerLayerRatio = 1)"),
-      new Pair("ds.e.navigation(arena = C_MAZE; nOfSensors = 7)", "ds.num.mlp(innerLayerRatio = 2)"),
-      new Pair("ds.e.navigation(arena = C_MAZE; nOfSensors = 7)", "ds.num.mlp(innerLayerRatio = 3)"),
-      new Pair("ds.e.navigation(arena = C_MAZE; nOfSensors = 7)", "ds.num.mlp(innerLayerRatio = 4)"),
-      new Pair("ds.e.navigation(arena = C_MAZE; nOfSensors = 7)", "ds.num.mlp(innerLayerRatio = 5)"),
+      // Plot: x_axis=sensorRange(3, 5, 7, 9, 11) with the other parameters fixed
+      new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 5; sensorRange = 0.05)", "ds.num.mlp(innerLayerRatio = 3; nOfInnerLayers = 1)"),
+      new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 5; sensorRange = 0.1)", "ds.num.mlp(innerLayerRatio = 3; nOfInnerLayers = 1)"),
+      new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 5; sensorRange = 0.25)", "ds.num.mlp(innerLayerRatio = 3; nOfInnerLayers = 1)"),
+      new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 5; sensorRange = 0.5)", "ds.num.mlp(innerLayerRatio = 3; nOfInnerLayers = 1)"),
+      //new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 5; sensorRange = 1)", "ds.num.mlp(innerLayerRatio = 3; nOfInnerLayers = 1)"),
 
-      // Plot: x_axis=nOfSensors(3, 5, 7, 9, 11) with fixed innerLayerRatio=3 and Barrier=C_MAZE
-      new Pair("ds.e.navigation(arena = C_MAZE; nOfSensors = 3)", "ds.num.mlp(innerLayerRatio = 3)"),
-      new Pair("ds.e.navigation(arena = C_MAZE; nOfSensors = 5)", "ds.num.mlp(innerLayerRatio = 3)"),
-      // new Pair("ds.e.navigation(arena = C_MAZE; nOfSensors = 7)", "ds.num.mlp(innerLayerRatio = 3)"),
-      new Pair("ds.e.navigation(arena = C_MAZE; nOfSensors = 9)", "ds.num.mlp(innerLayerRatio = 3)"),
-      new Pair("ds.e.navigation(arena = C_MAZE; nOfSensors = 11)", "ds.num.mlp(innerLayerRatio = 3)"),
+      // Plot: x_axis=nOfSensors(3, 5, 7, 9, 11) with the other parameters fixed
+      new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 3; sensorRange = 1)", "ds.num.mlp(innerLayerRatio = 3; nOfInnerLayers = 1)"),
+      //new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 5; sensorRange = 1)", "ds.num.mlp(innerLayerRatio = 3; nOfInnerLayers = 1)"),
+      new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 7; sensorRange = 1)", "ds.num.mlp(innerLayerRatio = 3; nOfInnerLayers = 1)"),
+      new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 9; sensorRange = 1)", "ds.num.mlp(innerLayerRatio = 3; nOfInnerLayers = 1)"),
+      new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 11; sensorRange = 1)", "ds.num.mlp(innerLayerRatio = 3; nOfInnerLayers = 1)"),
 
-      // Plot: x_axis=barrier(A_MAZE, B_MAZE, C_MAZE, D_MAZE, E_MAZE) with fixed innerLayerRatio=3 and
-      // nOfSensors=7
-      new Pair("ds.e.navigation(arena = A_MAZE; nOfSensors = 7)", "ds.num.mlp(innerLayerRatio = 3)"),
-      new Pair("ds.e.navigation(arena = B_MAZE; nOfSensors = 7)", "ds.num.mlp(innerLayerRatio = 3)"),
-      // new Pair("ds.e.navigation(arena = C_MAZE; nOfSensors = 7)", "ds.num.mlp(innerLayerRatio = 3)"),
-      new Pair("ds.e.navigation(arena = D_MAZE; nOfSensors = 7)", "ds.num.mlp(innerLayerRatio = 3)"),
-      new Pair("ds.e.navigation(arena = E_MAZE; nOfSensors = 7)", "ds.num.mlp(innerLayerRatio = 3)")
-      */
+      // Plot: x_axis=innerLayerRatio(1, 3, 5, 7, 9) with the other parameters fixed
+      new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 5; sensorRange = 1)", "ds.num.mlp(innerLayerRatio = 1; nOfInnerLayers = 1)"),
+      //new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 5; sensorRange = 1)", "ds.num.mlp(innerLayerRatio = 3; nOfInnerLayers = 1)"),
+      new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 5; sensorRange = 1)", "ds.num.mlp(innerLayerRatio = 5; nOfInnerLayers = 1)"),
+      new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 5; sensorRange = 1)", "ds.num.mlp(innerLayerRatio = 7; nOfInnerLayers = 1)"),
+      new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 5; sensorRange = 1)", "ds.num.mlp(innerLayerRatio = 9; nOfInnerLayers = 1)"),
+
+      // Plot: x_axis=nOfInnerLayers(1, 3, 5, 7, 9) with the other parameters fixed
+      // new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 5; sensorRange = 1)", "ds.num.mlp(innerLayerRatio = 1; nOfInnerLayers = 1)"),
+      new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 5; sensorRange = 1)", "ds.num.mlp(innerLayerRatio = 1; nOfInnerLayers = 3)"),
+      new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 5; sensorRange = 1)", "ds.num.mlp(innerLayerRatio = 1; nOfInnerLayers = 5)"),
+      new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 5; sensorRange = 1)", "ds.num.mlp(innerLayerRatio = 1; nOfInnerLayers = 7)"),
+      new Pair("ds.e.navigation(arena = A_BARRIER; nOfSensors = 5; sensorRange = 1)", "ds.num.mlp(innerLayerRatio = 1; nOfInnerLayers = 9)")
       );
 
   private static final String DEFAULT_FORMAT_PATH =
@@ -149,7 +138,7 @@ public class NavRandomSampling {
     @Parameter(
         names = {"--adaptiveResolution", "-ar"},
         description = "If true, the sampling resolution will be computed as a function of the genotype space dimension.")
-    public boolean adaptiveResolution = false;
+    public boolean adaptiveResolution = true;
 
     @Parameter(
         names = {"--samplingResoltion", "-sr"},
@@ -181,7 +170,7 @@ public class NavRandomSampling {
     @Parameter(
         names = {"--deltaUpdate", "-du"},
         description = "Delta [sec] update for the progress printer.")
-    public int deltaUpdate = 10;
+    public int deltaUpdate = 60;
 
     @Parameter(
         names = {"--help", "-h"},
