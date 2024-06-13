@@ -16,7 +16,7 @@ The ```main``` of ```io.github.elsalibymichel.core/src/main/NavRandomSampling.ja
 - A folder, ```2DNav_Optima-Based-Sampling/```, containing the configuration files for evolving controllers for the 2D navigation task with
 [```JGEA```](https://github.com/ericmedvet/jgea.git) (Develop branch, 2.6.2-SNAPSHOT).
 
-- A Java class for sampling the genotype space of the 2d navigation task with the sampling procedure based on the local optima and adaptive sampling rate.
+- A Java class for sampling the genotype space of the 2d navigation task using the sampling procedure based on the local optima and adaptive sampling rate.
 The ```main``` of ```io.github.elsalibymichel.core/src/main/BestGenotypesLandscapeCharacterizer.java``` takes
 as arguments a file```.csv``` containing the data obtained using the configuration files in the ```2DNav_Optima-Based-Sampling/```, and a string specifying the factor to be considered.
 
