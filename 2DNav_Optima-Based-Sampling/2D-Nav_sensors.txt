@@ -1,0 +1,60 @@
+ea.experiment(
+
+  runs = (randomGenerator = (seed = [1:1:10]) * [m.defaultRG()]) *
+    (problem = 
+      (environment = 
+      	(nOfSensors = [3;5;7;9;11])
+      	* 
+      	[ds.e.navigation(sensorRange = 3; arena = A_BARRIER)]
+      ) 
+      *
+      (f = [ds.e.n.finalD(); ds.e.n.avgD(); ds.e.n.minD()])
+      	*
+      [ea.p.numEnvTo(finalT = 60)]
+ 
+    ) 
+    * 
+    (solver = 
+      (nEval = [10000])
+      *
+      (mapper = [ea.m.dsToNpnds(npnds = ds.num.mlp(innerLayerRatio = 3; nOfInnerLayers = 1))])
+      * 
+      [ea.s.differentialEvolution()]
+    )
+    * 
+    [ea.run()];
+    
+  
+  listeners = [
+  
+    ea.l.bestCsv(
+      filePath = "nOfSensors.csv";
+      functions = [
+        ea.f.size(of = ea.f.genotype(of = ea.f.best()); format = "%3d");
+        ea.f.simQuality(of = ea.f.quality(of = ea.f.best()); format = "%5.2f")
+      ];
+      runKeys = [
+        ea.misc.sEntry(key = "seed"; value = "{randomGenerator.seed}");
+        ea.misc.sEntry(key = "n_sensors"; value = "{problem.environment.nOfSensors}");
+        ea.misc.sEntry(key = "solver"; value = "{solver.name}");
+        ea.misc.sEntry(key = "fitness_function"; value = "{problem.f}")
+      ]
+    );
+    
+    ea.l.bestCsv(
+      filePath = "nOfSensors_onlyLast.csv"; 
+      functions = [
+        ea.f.simQuality(of = ea.f.quality(of = ea.f.best()); format = "%5.2f");
+        ea.f.size(of = ea.f.genotype(of = ea.f.best()); format = "%3d");
+        ea.f.genotype(of = ea.f.best(); format = "%.10e")
+      ];
+      runKeys = [
+        ea.misc.sEntry(key = "seed"; value = "{randomGenerator.seed}");
+        ea.misc.sEntry(key = "n_sensors"; value = "{problem.environment.nOfSensors}");
+        ea.misc.sEntry(key = "solver"; value = "{solver.name}");
+        ea.misc.sEntry(key = "fitness_function"; value = "{problem.f}")
+      ];
+      onlyLast = true
+    )
+  ]
+)
