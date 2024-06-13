@@ -18,7 +18,7 @@ The ```main``` of ```io.github.elsalibymichel.core/src/main/NavRandomSampling.ja
 
 - A Java class for sampling the genotype space of the 2d navigation task using the sampling procedure based on the local optima and adaptive sampling rate.
 The ```main``` of ```io.github.elsalibymichel.core/src/main/BestGenotypesLandscapeCharacterizer.java``` takes
-as arguments a file```.csv``` containing the data obtained using the configuration files in the ```2DNav_Optima-Based-Sampling/```, and a string specifying the factor to be considered.
+as arguments a string with a path to a file```.csv``` containing the data obtained using the configuration files in the ```2DNav_Optima-Based-Sampling/```, and a string specifying the factor to be considered.
 
 - A Python file, ```RuggednessIndices.py```, containing the functions that we used to compute the ruggedness indices.
 
