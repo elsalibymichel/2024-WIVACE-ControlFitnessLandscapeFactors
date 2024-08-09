@@ -6,7 +6,7 @@
 
     <groupId>org.example</groupId>
     <artifactId>f-l-ruggedness</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.1-SNAPSHOT</version>
     <packaging>pom</packaging>
     <modules>
         <module>io.github.elsalibymichel.core</module>
